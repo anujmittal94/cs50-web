@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Advanced Search</title>
+        <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+        <link href='styles.css' rel='stylesheet'>
+        <style media="screen">
+            table{
+                width: 75%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="navbar">
+            <a href="index.html">Search</a>
+            <a href='image_search.html'>Image-Search</a>
+        </div>
+        <div class="logos" style="font-size: 20px">
+            <span style="color:#4285F4">G</span>
+            <span style="color:#DB4437">o</span>
+            <span style="color:#F4B400">o</span>
+            <span style="color:#4285F4">g</span>
+            <span style="color:#0F9D58">l</span>
+            <span style="color:#DB4437">e</span>
+        </div>
+        <h2 style="color:#DB4437;">Advanced Search</h2>
+        <form action="https://google.com/search">
+            <table>
+                <tr>
+                    <td>All these words:</td>
+                    <td><input type="text" name="as_q" style="width: 100%;"></td>
+                </tr>
+                <tr>
+                    <td>This exact word or phrase:</td>
+                    <td><input type="text" name="as_epq"style="width: 100%;"></td>
+                </tr>
+                <tr>
+                    <td>Any of these words:</td>
+                    <td><input type="text" name="as_oq" style="width: 100%;"></td>
+                </tr>
+                <tr>
+                    <td>None of these words:</td>
+                    <td><input type="text" name="as_eq" style="width: 100%;"></td>
+                </tr>
+            </table>
+            <input class="bluebutton" type="submit" value="Advanced Search">
+        </form>
+    </body>
+</html>

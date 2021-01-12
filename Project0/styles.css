@@ -1,0 +1,42 @@
+.centered_page_content{
+    text-align: center;
+}
+
+.logos{
+    font-family: Nunito, sans-serif;
+    font-weight: bold;
+}
+
+a{
+    font-family: Nunito, sans-serif;
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover{
+    text-decoration: underline;
+}
+
+.navbar{
+    font-family: Nunito, sans-serif;
+    text-align: right;
+}
+
+input[type=text]{
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+input[type=submit]{
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+.bluebutton{
+    color: white;
+    background: #4285F4;
+}
