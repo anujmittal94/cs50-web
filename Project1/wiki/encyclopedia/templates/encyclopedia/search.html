@@ -5,11 +5,11 @@
 {% endblock %}
 
 {% block body %}
-    <h1>All Pages</h1>
+    <h1>Search Results</h1>
 
     <ul>
-        {% for entry in entries %}
-            <a href="{% url 'wikipage' title=entry %}"><li>{{ entry }}</li></a>
+        {% for match in matches %}
+            <a href="{% url 'wikipage' title=match %}"><li>{{ match }}</li></a>
         {% endfor %}
     </ul>
 

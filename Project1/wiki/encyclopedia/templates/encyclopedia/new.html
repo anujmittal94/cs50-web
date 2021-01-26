@@ -1,0 +1,22 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia
+{% endblock %}
+
+{% block body %}
+    <h1>New Page</h1>
+    <form  method="post" class="form-group col-md-10">
+        {% csrf_token %}
+        {{form.title.label}}
+        {{ form.title }}
+        {{form.markdown.label}}
+        {{ form.markdown }}
+        <input type="submit" class="btn btn-primary">
+    </form>
+    {% if error != None %}
+    <div class="alert alert-danger">
+        {{error}}
+    </div>
+    {% endif %}
+{% endblock %}
