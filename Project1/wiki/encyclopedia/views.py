@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from . import util
 from random import choice
 import markdown2
+import re
 
 class NewPageForm(forms.Form):
     title = forms.CharField(label="New Page Title", widget=forms.TextInput(attrs={'class': "form-control"}), required=False)
@@ -67,7 +68,7 @@ def new(request):
 
 def edit(request, title):
     if request.method == 'GET':
-        initial = {"markdown":util.get_entry(title.capitalize())}
+        initial = {"markdown":re.sub("\r", "", util.get_entry(title.capitalize()))}
         return render(request, 'encyclopedia/edit.html', {
             "title": title.capitalize(),
             "form": EditPageForm(initial = initial),

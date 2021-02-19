@@ -1,0 +1,126 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if not listing.open_status and current_bid.bidder == user %}
+        <h4>Congrats {{user}} you have won the auction!<h4>
+        <hr>
+    {% endif %}
+
+        <h4>
+            {{listing.title}}
+
+            {% if listing.lister == user %}
+                {% if listing.open_status %}
+                    <h4>
+                    <form action="{% url 'close' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input class="btn btn-primary" type="submit" value="Close Listing">
+                    </form>
+                    </h4>
+                {% else %}
+                    <h4>
+                    <form action="{% url 'open' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input class="btn btn-primary" type="submit" value="Open Listing">
+                    </form>
+                    </h4>
+                {% endif %}
+            {% endif %}
+
+            {% if userwatching %}
+                <h4>
+                <form action="{% url 'stopwatch' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit" value="Remove from Watchlist">
+                </form>
+                </h4>
+            {% else %}
+                <h4>
+                <form action="{% url 'startwatch' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit" value="Add to Watchlist">
+                </form>
+                </h4>
+            {% endif %}
+        </h4>
+        <b>Listing Number:</b> {{listing.id}}
+        <b>Posted by:</b> {{listing.lister}}
+        <br>
+        <b>Category:</b> {{listing.get_category_display}}
+        <br>
+        {% if listing.image_url == "" %}
+            No Images.
+        {% else %}
+            <img src={{listing.image_url}} alt="Image could not be loaded." width="200">
+        {% endif %}
+        <br>
+        {{listing.description}}
+        <br>
+        {% if current_bid %}
+            <b>Current Price:</b> ${{current_bid.amount}} by {{current_bid.bidder}}.
+        {% else %}
+            <b>Current Price:</b> ${{listing.current_price}} No bids yet.
+        {% endif %}
+
+        {% if user.is_authenticated and listing.open_status %}
+            {% if not user == listing.lister %}
+                <form action="{% url 'bid' listing.id %}" method="post">
+                    {% csrf_token %}
+                    {% for field in bidform %}
+                        <div class="form-group">
+                            {{field}}
+                        </div>
+                    {% endfor %}
+                    <input class="btn btn-primary" type="submit" value="Bid">
+                </form>
+            {% else %}
+                <br>
+                <b>Note.</b>
+                You cannot bid on your own listing.
+            {% endif %}
+            <br>
+            <form action="{% url 'comment' listing.id%}" method="post">
+                {% csrf_token %}
+                {% for field in commentform %}
+                    <div class="form-group">
+                        {{field}}
+                    </div>
+                {% endfor %}
+                <input class="btn btn-primary" type="submit" value="Comment">
+            </form>
+
+        {% elif not listing.open_status %}
+            <br>
+            The auction has now been closed. {{current_bid.bidder}} is the winner.
+            <form action="{% url 'comment' listing.id%}" method="post">
+                {% csrf_token %}
+                {% for field in commentform %}
+                    <div class="form-group">
+                        {{field}}
+                    </div>
+                {% endfor %}
+                <input class="btn btn-primary" type="submit" value="Comment">
+            </form>
+        {% else %}
+            <br>
+            Please <a href="{% url 'login' %}">sign in</a> to bid or make comments.
+
+        {% endif %}
+
+        <br><hr>
+        <h4>Recent Bids</h4>
+        {% for bid in bids %}
+            <b>{{bid.bidder}} bid:</b>
+            ${{bid.amount}}
+            <br>
+        {% endfor %}
+
+        <br><hr>
+        <h4>Comments</h4>
+        {% for comment in comments %}
+            <b>{{comment.commenter}} says:</b> <br>
+            {{comment.comment}}
+            <br><br>
+        {% endfor %}
+
+{% endblock %}

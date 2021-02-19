@@ -1,0 +1,40 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% if category_name %}
+    <h2>{{category_name}}</h2>
+    {% for listing in listings %}
+    {% if listing.open_status %}
+        <hr>
+        <h4>{{listing.title}}</h4>
+        <b>Listing Number:</b> {{listing.id}}
+        <b>Posted by:</b> {{listing.lister}}
+        <br>
+        {% if listing.image_url == "" %}
+            No Images.
+        {% else %}
+            <img src={{listing.image_url}} alt="Image could not be loaded." width="100">
+        {% endif %}
+        <br>
+        {{listing.description}}
+        <br>
+        <b>Current Price:</b> ${{listing.current_price}}
+        <br>
+        <a href="{% url 'listing' listing.id %}">
+            <button type="button" class="btn btn-primary">View Listing</button>
+        </a>
+    {% endif %}
+    {% empty %}
+    No listings in this category
+    {% endfor %}
+{% else %}
+    <h2>Categories</h2>
+    <ul>
+        {% for category, category_name in categories %}
+            <li>
+                <a  href="{% url 'category' category %}">{{category_name}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}

@@ -9,7 +9,7 @@
     <form  method="post" class="form-group col-md-10">
         {% csrf_token %}
         {{form.markdown.label}}
-        {{ form.markdown }}
+        {{form.markdown}}
         <input type="submit" class="btn btn-primary">
     </form>
     {% if error != None %}

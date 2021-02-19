@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Closed Listings</h2>
+    {% for listing in listings %}
+    <hr>
+        <h4>{{listing.title}}</h4>
+        <b>Posted by:</b> {{listing.lister}}
+        <br>
+        {% if listing.image_url == "" %}
+            No Images.
+        {% else %}
+            <img src={{listing.image_url}} alt="Image could not be loaded." width="100">
+        {% endif %}
+        <br>
+        {{listing.description}}
+        <br>
+        <b>Closing Price:</b> ${{listing.current_price}}
+        <br>
+        <a href="{% url 'listing' listing.id %}">
+            <button type="button" class="btn btn-primary">View Listing</button>
+        </a>
+    {% endfor %}
+{% endblock %}

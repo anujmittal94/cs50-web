@@ -1,0 +1,51 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Watchlist</h2>
+    <hr>
+    <h3>Watched Listings</h3> 
+    {% for watch in watched %}
+        {% if not watch.listing.lister == user %}
+            <hr>
+            <h4>{{watch.listing.title}}</h4>
+            <b>Posted by:</b> {{watch.listing.lister}}
+            <br>
+            {% if watch.listing.image_url == "" %}
+                No Images.
+            {% else %}
+                <img src={{watch.listing.image_url}} alt="Image could not be loaded." width="100">
+            {% endif %}
+            <br>
+            {{watch.listing.description}}
+            <br>
+            <b>Current Price:</b> ${{watch.listing.current_price}}
+            <br>
+            <a href="{% url 'listing' watch.listing.id %}">
+                <button type="button" class="btn btn-primary">View Listing</button>
+            </a>
+        {% endif %}
+    {% endfor %}
+    <hr>
+    <h3>Your Listings</h3>
+    {% for watch in watched %}
+        {% if watch.listing.lister == user %}
+            <hr>
+            <h4>{{watch.listing.title}}</h4>
+            <b>Posted by:</b> {{watch.listing.lister}}
+            <br>
+            {% if watch.listing.image_url == "" %}
+                No Images.
+            {% else %}
+                <img src={{watch.listing.image_url}} alt="Image could not be loaded." width="100">
+            {% endif %}
+            <br>
+            {{watch.listing.description}}
+            <br>
+            <b>Current Price:</b> ${{watch.listing.current_price}}
+            <br>
+            <a href="{% url 'listing' watch.listing.id %}">
+                <button type="button" class="btn btn-primary">View Listing</button>
+            </a>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
