@@ -1,0 +1,10 @@
+<div class="post" id="post-{{post.id}}">
+    <div class="post-text" id="post-text-{{post.id}}">{{post.post}}</div>
+    <div class="post-time" id="post-time-{{post.id}}">Posted on {{post.timestamp}}</div>
+    <div class="post-likes" id="post-likes-{{post.id}}">TODO likes</div>
+    <button type="button" class="btn btn-light like" data-post_id="{{post.id}}">Like</button>
+    {% if user == post.poster %}
+        <button type="button" class="btn btn-light edit" data-post_id="{{post.id}}">Edit</button>
+        <button type="button" class="btn btn-light delete" data-post_id="{{post.id}}">Delete</button>
+    {% endif %}
+</div>

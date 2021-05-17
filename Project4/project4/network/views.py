@@ -3,12 +3,47 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import User
-
+from .models import User, Post, Follow
 
 def index(request):
-    return render(request, "network/index.html")
+    posts = Post.objects.all().order_by("-timestamp")
+    partial_posts = pagination(request, posts)
+    return render(request, "network/index.html", {
+        "posts": partial_posts
+    })
+
+def user_page(request, user_id):
+    requested_user = User.objects.get(id = user_id)
+    current_user = request.user
+    posts = Post.objects.all().order_by("-timestamp")
+    partial_posts = pagination(request, posts)
+    return render(request, "network/user_page.html", {
+        "requested_user": requested_user,
+        "posts": partial_posts,
+        "followers": len(requested_user.followsonuser.all()),
+        "following": len(requested_user.followsbyuser.all())
+    })
+
+def following_page(request, user_id):
+    requested_user = User.objects.get(id = user_id)
+    posts = Post.objects.all().order_by("-timestamp")
+    partial_posts = pagination(request, posts)
+    return render(request, "network/following_page.html", {
+        "posts": partial_posts
+    })
+
+def pagination(request, posts):
+    page = request.GET.get('page', 1)
+    paginator = Paginator(posts, 1)
+    try:
+        partial_posts = paginator.page(page)
+    except PageNotAnInteger:
+        partial_posts = paginator.page(1)
+    except EmptyPage:
+        partial_posts = paginator.page(paginator.num_pages)
+    return partial_posts
 
 
 def login_view(request):

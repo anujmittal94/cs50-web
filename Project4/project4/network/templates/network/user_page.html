@@ -1,0 +1,8 @@
+{% extends "network/layout.html" %}
+{% block body %}
+<div class="user-profile">
+    <h1>{{requested_user.username}}'s Page</h1>
+    <b>{{followers}}</b> Followers <b>{{following}}</b> Following
+</div>
+{% include "network/posts.html" %}
+{% endblock %}
