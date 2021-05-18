@@ -1,0 +1,35 @@
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('#new_post_text').oninput = function () {
+          document.querySelector("#new_post_count").innerHTML = (500 - this.value.length) + " characters remaining.";
+        };
+    });
+</script>
+
+{% if user.is_authenticated %}
+<form action="{% url 'index'%}" method="post">
+    {% csrf_token %}
+    <div class="form-group" style="padding: 10px 10px 10px 10px;">
+        <textarea
+         name="new_post_text"
+         id="new_post_text"
+         class="form-control textarea"
+         placeholder="What are you thinking?"
+         maxlength="500"></textarea>
+        <span id="new_post_count">500 words remaining</span>
+        <input class="btn btn-dark" type="submit" value="Post" style="float: right;">
+    </div>
+</form>
+{% else %}
+<div class="form-group" style="padding: 10px 10px 10px 10px;">
+    <textarea
+     name="new_post_text"
+     id="new_post_text"
+     class="form-control textarea"
+     placeholder="Please log in to post."
+     maxlength="500"
+     disabled></textarea>
+    <span id="new_post_count">500 words remaining</span>
+    <input class="btn btn-dark" type="submit" value="Post" style="float: right;" disabled>
+</div>
+{% endif %}

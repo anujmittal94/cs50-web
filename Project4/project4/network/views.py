@@ -8,6 +8,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import User, Post, Follow
 
 def index(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            current_user = request.user
+            new_post_text = request.POST["new_post_text"]
+            Post.objects.create(poster = current_user, post = new_post_text)
     posts = Post.objects.all().order_by("-timestamp")
     partial_posts = pagination(request, posts)
     return render(request, "network/index.html", {
@@ -36,7 +41,7 @@ def following_page(request, user_id):
 
 def pagination(request, posts):
     page = request.GET.get('page', 1)
-    paginator = Paginator(posts, 1)
+    paginator = Paginator(posts, 10)
     try:
         partial_posts = paginator.page(page)
     except PageNotAnInteger:
