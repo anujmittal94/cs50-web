@@ -1,10 +1,17 @@
 <div class="post" id="post_{{post.id}}">
     <div class="post-text" id="post_text_{{post.id}}">{{post.post}}</div>
-    <div class="post-time" id="post_time_{{post.id}}">Posted on {{post.timestamp}}</div>
-    <div class="post-likes" id="post_likes_{{post.id}}">TODO likes</div>
-    <button type="button" class="btn btn-light like" data-post_id="{{post.id}}">Like</button>
-    {% if user == post.poster %}
-        <button type="button" class="btn btn-light edit" data-post_id="{{post.id}}">Edit</button>
-        <button type="button" class="btn btn-light delete" data-post_id="{{post.id}}">Delete</button>
+    <div class="post-time" id="post_time_{{post.id}}">Posted on {{post.timestamp}} by
+         <a href="{% url 'user_page' post.poster.id%}">{{post.poster}}</a></div>
+    <div class="post-likes" id="post_likes_{{post.id}}">{{post.likes.count}} likes</div>
+    {% if user.is_authenticated %}
+        {% if user in post.likes.all %}
+            <button type="button" class="btn btn-light like" data-post_id="{{post.id}}">Unlike</button>
+        {% else %}
+            <button type="button" class="btn btn-light like" data-post_id="{{post.id}}">Like</button>
+        {% endif %}
+        {% if user == post.poster %}
+            <button type="button" class="btn btn-light edit" data-post_id="{{post.id}}">Edit</button>
+            <button type="button" class="btn btn-light delete" data-post_id="{{post.id}}">Delete</button>
+        {% endif %}
     {% endif %}
 </div>

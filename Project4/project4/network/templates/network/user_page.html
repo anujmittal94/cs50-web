@@ -1,7 +1,20 @@
 {% extends "network/layout.html" %}
+
 {% block body %}
 <div class="user-profile">
-    <h1>{{requested_user.username}}'s Page</h1>
+    <h1>
+        {{requested_user.username}}'s Page
+        {% if user.is_authenticated and user != requested_user %}
+            <form action="{% url 'user_page' requested_user.id %}" method="post">
+                {% csrf_token %}
+                {% if follow_status %}
+                    <input class="btn btn-dark" type="submit" value="Unfollow">
+                {% else %}
+                    <input class="btn btn-dark" type="submit" value="Follow">
+                {% endif %}
+            </form>
+        {% endif %}
+    </h1>
     <b>{{followers}}</b> Followers <b>{{following}}</b> Following
 </div>
 {% include "network/posts.html" %}

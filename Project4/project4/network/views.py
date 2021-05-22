@@ -1,9 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Post, Follow
 
@@ -19,21 +22,71 @@ def index(request):
         "posts": partial_posts
     })
 
+@login_required
+@csrf_exempt
+def edit_post(request, post_id):
+    post = Post.objects.get(id = post_id)
+    if request.user != post.poster:
+        return JsonResponse({"error": "Editing restricted to poster"}, status = 400)
+    if request.method != "PUT":
+        return JsonResponse({"error": "PUT request required"}, status = 400)
+    json_data = json.loads(request.body)
+    post_data = json_data.get("edited_post_text", "")
+    post.post = post_data
+    post.save()
+    return JsonResponse({"message": "Post Edited"}, status = 201)
+
+@login_required
+@csrf_exempt
+def like_post(request, post_id):
+    if request.method != "PUT":
+        return JsonResponse({"error": "PUT request required"}, status = 400)
+    post = Post.objects.get(id = post_id)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+    post.save()
+    return JsonResponse({"message": "Post Edited", "likes_num": str(post.likes.count())}, status = 201)
+
+@login_required
+@csrf_exempt
+def delete_post(request, post_id):
+    post = Post.objects.get(id = post_id)
+    if request.user != post.poster:
+        return JsonResponse({"error": "Deletion restricted to poster"}, status = 400)
+    if request.method != "PUT":
+        return JsonResponse({"error": "PUT request required"}, status = 400)
+    post.delete()
+    return JsonResponse({"message": "Post Deleted"}, status = 201)
+
 def user_page(request, user_id):
     requested_user = User.objects.get(id = user_id)
-    current_user = request.user
-    posts = Post.objects.all().order_by("-timestamp")
+    posts = Post.objects.filter(poster = requested_user).order_by("-timestamp")
     partial_posts = pagination(request, posts)
+
+    follow_status = False
+    if request.user.is_authenticated:
+        if request.method == "POST" and request.user != requested_user:
+            if request.user.followsbyuser.filter(following = requested_user).exists():
+                request.user.followsbyuser.filter(following = requested_user).delete()
+            else:
+                Follow(follower = request.user, following = requested_user).save()
+        if request.user.followsbyuser.filter(following = requested_user).exists():
+            follow_status = True
+
     return render(request, "network/user_page.html", {
         "requested_user": requested_user,
         "posts": partial_posts,
         "followers": len(requested_user.followsonuser.all()),
-        "following": len(requested_user.followsbyuser.all())
+        "following": len(requested_user.followsbyuser.all()),
+        "follow_status": follow_status
     })
 
-def following_page(request, user_id):
-    requested_user = User.objects.get(id = user_id)
-    posts = Post.objects.all().order_by("-timestamp")
+@login_required
+def following_page(request):
+    followed_users = [follow.following for follow in request.user.followsbyuser.all()]
+    posts = Post.objects.filter(poster__in = followed_users).order_by("-timestamp")
     partial_posts = pagination(request, posts)
     return render(request, "network/following_page.html", {
         "posts": partial_posts
